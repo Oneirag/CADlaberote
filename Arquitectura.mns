@@ -1,0 +1,118 @@
+//
+//      AutoCAD menu file - C:\ARCHIVOS DE PROGRAMA\AUTOCAD R14\PRG\Arquitectura.mnc
+//
+
+***MENUGROUP=ARQUITECTURA
+
+***POP1
+               [Ar&quitectura]
+ID__mnPuerta   [&Puerta]^C^Cpuerta 
+ID__mnPuertadb [Puerta &doble]^C^CPuertadoble 
+               [--]
+ID__mnVentana  [&Ventana]^C^Cventana 
+               [--]
+ID__mnMuro     [&Muro]^C^Cmuro 
+ID__mnCotacon  [&Cota continua]^C^Ccontinua 
+               [--]
+ID__mnExtiende [&Extiende]^C^CExtiende 
+ID__mnCorta    [Co&rta]^C^CCorta 
+               [--]
+ID__mnModificar [->Personalizar]
+ID__mnModifpt    [Modifica &puerta]^C^Cmodifpt 
+ID__mnModifptd   [Modificar puerta &doble]^C^Cmodifptd 
+ID__mnModifven   [Modifica &ventana]^C^CModifven 
+ID__mnGic        [&Gira carpintería]^C^Cgic 
+ID__mnDespcarp   [<-&Desplaza carpinteria]^C^Cdespcarp 
+ID__mnBoc      [&Borra carpintería]^C^CBoc 
+               [--]
+Id__opVent     [->Opciones de Ventana]
+Id_1             [&Simple]^C^C(setq tipo "Simple") 
+id_2             [&Doble]^C^C(setq tipo "Doble") 
+id_3             [&3 Hojas]^C^C(setq tipo "3") 
+id_4             [&4 Hojas]^C^C(setq tipo "4") 
+id_5             [-> Alfeizar]
+id_6               [&Si]^C^C(setq alf "Si") 
+id_7               [<-&No]^C^C(setq alf "No") 
+id_8             [->Centrar en muro]
+id_9               [&Si]^C^C(setq centrar "Si") 
+id_10              [<-<-&No]^C^C(setq centrar "No") 
+ID__Menu3D     [->3D]
+ID__nada         [<-No disponible todavía]^C^C
+               [--]
+ID__mntriang   [&Triangular]^C^Ctriang 
+ID__mnUne      [&Unir muros]^C^Cune 
+ID__mnM2       [Metro cuadrado]^C^Cm2 
+               [--]
+ID__mnDXF      [Carga D&XF]^C^C_dxfin 
+id__mnMostrar  [&Mostrar barra herr]^C^C-toolbar "Arquitectura 2D" _show 
+
+***TOOLBARS
+**ARQUITECTURA
+**TB_ARQUITECTURA_2D
+ID_Arquitectura_0 [_Toolbar("Arquitectura 2D", _Floating, _Show, 636, 40, 2)]
+ID__tbPuerta   [_Button("Puerta", "ICON9358.bmp", "ICON_24_BLANK")]^C^Cpuerta 
+ID__tbPuertadb [_Button("Puerta doble", "ICON8467.bmp", "ICON_24_BLANK")]^C^CPuertadoble 
+ID__tbVentana  [_Button("Ventana", "ICON6500.bmp", "ICON_24_BLANK")]^C^Cventana 
+ID__tbModificar [_Flyout("Modificar", ICON6827.bmp, ICON_24_BLANK, _OtherIcon, ARQUITECTURA.PERSONALIZAR)]
+ID__tbBoc      [_Button("Borra carpintería", "ICON9961.bmp", "ICON_24_BLANK")]^C^CBoc 
+ID__tbMuro     [_Button("Muro", "ICON5724.bmp", "ICON_24_BLANK")]^C^Cmuro 
+ID__tbUne      [_Button("Unir muros", "ICON1942.bmp", "ICON_24_BLANK")]^C^Cune 
+ID__tbCotacon  [_Button("Cota continua", "ICON1478.bmp", "ICON_24_BLANK")]^C^Ccontinua 
+ID__tbtriang   [_Button("Triangular", "ICON0491.bmp", "ICON_24_BLANK")]^C^Ctriang 
+ID__tbExtiende [_Button("Extiende", "ICON3281.bmp", "ICON_24_BLANK")]^C^CExtiende 
+ID__tbCorta    [_Button("Corta", "ICON4464.bmp", "ICON_24_BLANK")]^C^CCorta 
+ID__tbM2       [_Button("Metro cuadrado", "ICON2995.bmp", "ICON_24_BLANK")]^C^Cm2 
+
+**PERSONALIZAR
+ID_Personalizar_0 [_Toolbar("Personalizar", _Floating, _Hide, 639, 202, 1)]
+ID__tbModifpt  [_Button("Modifica puerta", "ICON0041.bmp", "ICON_24_BLANK")]^C^Cmodifpt 
+ID__tbModifptd [_Button("Modificar puerta doble", "ICON6334.bmp", "ICON_24_BLANK")]^C^Cmodifptd 
+ID__tbModifven [_Button("Modifica ventana", "ICON6962.bmp", "ICON_24_BLANK")]^C^CModifven 
+ID__tbGic      [_Button("Gira carpintería", "ICON5705.bmp", "ICON_24_BLANK")]^C^Cgic 
+ID__tbDespcarp [_Button("Desplaza carpinteria", "ICON8145.bmp", "ICON_24_BLANK")]^C^Cdespcarp 
+
+
+***HELPSTRINGS
+ID__TBBOC      [Borrar carpintería en un muro: Borracarp o Boc]
+ID__TBDESPCARP [Desplazar carpintería en el hueco del muro]
+ID__TBMODIFPTD [Modificar los parámetros de una puerta doble]
+ID__MNCOTACON  [Crear cotas continuas entre dos puntos dados : Continua]
+ID__MNEXTIENDE [Extender una entidad con sólo seleccionarla : Extiende o Xtend]
+ID__MNVENTANA  [Crear ventanas en un muro : Ventana o Ven]
+ID__MNMOSTRAR  [Mostrar la barra de herramientas de Arquitectura 2D]
+ID__MNUNE      [Une dos muros: une]
+ID__TBM2       [Poner el superíndice dos al lado de un texto: metro2 ó M2]
+ID__TBUNE      [Une dos muros: une]
+ID__TBCOTACON  [Crear cotas continuas entre dos puntos dados : Continua]
+ID__MNM2       [Poner el superíndice dos al lado de un texto: metro2 ó M2]
+ID_ARQUITECTURA_0 [Programas de arquitectura en 2D]
+ID__TBVENTANA  [Crear ventanas en un muro : Ventana o Ven]
+ID__MNMODIFICAR [Modificaciones varias de las órdenes de Arquitectura]
+ID__MNMODIFVEN [Modificar los parámetros de una ventana]
+ID__MNPUERTADB [Crear puertas dobles en un muro : Puertad ó ptd]
+ID_PERSONALIZAR_0 [Modificaciones varias de las órdenes de Arquitectura]
+ID__TBCORTA    [Recortar una entidad con sólo seleccionarla : Corta o Xtrim]
+ID__MNMODIFPT  [Cambiar los parámetros de las nuevas puertas]
+ID__MNCORTA    [Recortar una entidad con sólo seleccionarla : Corta o Xtrim]
+ID__TBEXTIENDE [Extender una entidad con sólo seleccionarla : Extiende o Xtend]
+ID__MNGIC      [Cambiar la apertura de las puertas y ventanas: giracarp]
+ID__MNDESPCARP [Desplazar carpintería en el hueco del muro]
+ID__MNMODIFPTD [Modificar los parámetros de una puerta doble]
+ID__TBMODIFICAR [Modificaciones varias de las órdenes de Arquitectura]
+ID__MNDXF      [Cargar dxf]
+ID__TBGIC      [Cambiar la apertura de las puertas y ventanas: giracarp]
+ID__TBMURO     [Crear muros : muro ó mr]
+ID__TBMODIFPT  [Cambiar los parámetros de las nuevas puertas]
+ID__TBPUERTA   [Crear puertas simples en un muro: Puerta ó pt]
+ID__MNPUERTA   [Crear puertas simples en un muro: Puerta ó pt]
+ID__MNMURO     [Crear muros : muro ó mr]
+ID__TBMODIFVEN [Modificar los parámetros de una ventana]
+ID__MNTRIANG   [Crea triangulos con un lado base y las medidas de los otros dos : Triang]
+ID__TBTRIANG   [Crea triangulos con un lado base y las medidas de los otros dos : Triang]
+ID__TBPUERTADB [Crear puertas dobles en un muro : Puertad ó ptd]
+ID__MNBOC      [Borrar carpintería en un muro: Borracarp o Boc]
+
+//
+//      End of AutoCAD menu file - C:\ARCHIVOS DE PROGRAMA\AUTOCAD R14\PRG\Arquitectura.mnc
+//
+
