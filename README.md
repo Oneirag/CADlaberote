@@ -41,8 +41,12 @@ Genera una ventana, de forma similar a cómo se crea una puerta y en su misma ca
 ## Funciones para modificar puertas y ventanas
 ### modifipt o mop
 Muestra una imágen de una puerta simple y pide los parámetros de la puerta (tamaño de la jamba y de la hoja)
+
+![](img/modifpt.png)
 ### modifptd o mopd
 Muestra la imagen de una puerta doble y pide los parámetros de las puerdas dobles (tamaño de las jambas y de las dos hojas)
+
+![](img/modifptd.png)
 ### modifven o moven
 Muestra la imagen de una ventana simple y una ventana doble y pide sus parémtros:
 - Tipo de ventana: simple, doble, 3 hojas o 4 hojas
@@ -51,6 +55,7 @@ Muestra la imagen de una ventana simple y una ventana doble y pide sus parémtro
 - Ancho del perfil
 - Centrar en el muro: si o no
 
+![](img/modifven.png)
 ### gic o giracarp
 Seleccionando una puerta/ventana (simple o doble) permite cambiarle la dirección en cualquiera de los dos ejes.
 
