@@ -3,16 +3,26 @@ Utilidades sencillas en lisp para arquitectura en Autocad (hacer muros, puertas,
 
 Todas utilidades funcionan por línea de comandos, algunos comandos tienen dos nombres (uno largo y uno corto).
 
+En las instrucciones si no funciona algún comando por estar escrito en inglés añade un guión bajo al inicio (por ejemplo, si no funciona appload usa _appload)
+
 Está pensado para dibujos en metros, ya que las medidas por defecto del ancho del muro son 30cm (0.3) y de las puertas 72cm (0.72)
 
 
 ## Instalación
 1. Descarga los ficheros en una carpeta (y recuerda su nombre).
 2. Abre autocad
-3. Escribe OPTIONS, Despliega el apartado "Support File Search Path" o "Ruta de Búsqueda de Archivos de Soporte", y añade la carpeta del punto 1)
-4. Escribe ahora APPLOAD, elige "Startup suite" o "Cargar al inicio" y navega hasta la carpeta del punto 1. De todos los ficheros elegir "Arquitectura.lsp"
+3. Escribe OPTIONS (u _options), Despliega el apartado "Support File Search Path" o "Ruta de Búsqueda de Archivos de Soporte", y añade la carpeta del punto 1)
+![](img/support_files.png)
+4. Escribe ahora APPLOAD (o _appload), elige "Startup suite" o "Cargar al inicio" y navega hasta la carpeta del punto 1. De todos los ficheros elegir "Arquitectura.lsp"
+![](img/startup_suite.png)
 5. Si todo es correcto en la consola aparece un mensaje que dice "Programas de arquitectura preparados"
+6. Opcionalmente, se puede cargar una personalización que muestra los menús de arquitectura y una barra flotante, escribe CUI (o _cui), y marca el icono de añadir un fichero 
 
+![](img/load_partial_customization.png)
+
+Navega hasta la carpeta del punto 1), elige Arquitectura y acepta todas las ventanas. Te aparecerá la barra flotante de las herramientas de arquitectura
+
+![](img/arquitectura_toolbar.png)
 ## Funciones de dibujo
 ## muro o mr
 Crea un muro. Se elige el punto inicial y final del muro (que definen una de las líneas paralelas) y el lado para el que va el muro (donde irá la línea paralela que define el muro). También da la opción de cerrar el muro. 
