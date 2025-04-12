@@ -13,6 +13,9 @@ Está pensado para dibujos en metros, ya que las medidas por defecto del ancho d
 2. Abre autocad
 3. Escribe OPTIONS (u _options), Despliega el apartado "Support File Search Path" o "Ruta de Búsqueda de Archivos de Soporte", y añade la carpeta del punto 1)
 
+**IMPORTANTE**: Si tu versión de Autocad tiene la opción de "Trusted locations" o "Ubicaciones de confianza", debes añadir la carpeta anterior también en este apartado 
+![trusted_locations.png](img/trusted_locations.png)
+
 ![añadir la carpeta al path](img/support_files.png)
 5. Escribe ahora APPLOAD (o _appload), elige "Startup suite" o "Cargar al inicio" y navega hasta la carpeta del punto 1. De todos los ficheros elegir "Arquitectura.lsp"
 
