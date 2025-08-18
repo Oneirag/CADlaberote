@@ -84,7 +84,8 @@
 		 pgrosor p4 p5 mensaje
 		 linea1 linea2 aux nuevovalor
 		 hueco capamuro escala olderr
-		 perfil cristal tipo alf centrar alfeiz anchop)
+		 ;perfil cristal tipo alf centrar alfeiz anchop
+                )
 
 	;;-------LLamar a la nueva funcion de error)
 	(setq olderr *error* *error* prog-err)
@@ -101,13 +102,13 @@
 		'(0 0 0 0 0 0 0))
 
 	;; Inicializar variables por defecto si no existen
-	(if (not perfil) (setq perfil 0.05))     ; 5 cm por defecto
-	(if (not cristal) (setq cristal 0.50))   ; 50 cm por defecto
-	(if (not tipo) (setq tipo "Doble"))      ; Simple por defecto
-	(if (not alf) (setq alf "Si"))           ; Con alfeizar por defecto
-	(if (not centrar) (setq centrar "No"))   ; No centrado por defecto
-	(if (not alfeiz) (setq alfeiz 0.03))     ; 3 cm de alfeizar por defecto
-	(if (not anchop) (setq anchop 0.70))     ; Para compatibilidad
+	;(if (not perfil) (setq perfil 0.05))     ; 5 cm por defecto
+	;(if (not cristal) (setq cristal 0.50))   ; 50 cm por defecto
+	;(if (not tipo) (setq tipo "Doble"))      ; Simple por defecto
+	;(if (not alf) (setq alf "Si"))           ; Con alfeizar por defecto
+	;(if (not centrar) (setq centrar "No"))   ; No centrado por defecto
+	;(if (not alfeiz) (setq alfeiz 0.03))     ; 3 cm de alfeizar por defecto
+	;(if (not anchop) (setq anchop 0.70))     ; Para compatibilidad
 
 	(command-s "_undo" "_begin")
 

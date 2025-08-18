@@ -57,7 +57,7 @@
 		 entidad angulo-aux distancia intersec		
 		 pgrosor p4 p5 mensaje
 		 linea1 linea2 aux nuevovalor
-		 hueco capamuro anchop jamba olderr)
+		 hueco capamuro)
 
 	;;-------LLamar a la nueva funcion de error)
 	(setq olderr *error* *error* prog-err)
@@ -74,8 +74,8 @@
 		'(0 0 0 0 0 0 0))
 
 	;; Inicializar variables por defecto si no existen
-	(if (not anchop) (setq anchop 0.70))  ; 70 cm por defecto
-	(if (not jamba) (setq jamba 0.10))    ; 10 cm por defecto
+	;;(if (not anchop) (setq anchop 0.70))  ; 70 cm por defecto
+	;;(if (not jamba) (setq jamba 0.10))    ; 10 cm por defecto
 
 	(command-s "_undo" "_begin")	
 	(setq bisagra (getpoint "\nPunto en el que irá la bisagra <Relativo>: "))
@@ -100,15 +100,15 @@
 	(setq aux (getpoint bisagra "\nHacia que lado de la bisagra irá el hueco: ")) 	
 
 	;solicita el ancho del hueco 
-	(if (not anchop)
-	    (setq mensaje "\nAncho de la hoja (NOTA: las dos jambas ocupan 10 cm)<ancho>: ")
-	    (setq mensaje (strcat "\nAncho de la hoja (NOTA: las dos jambas ocupan 10 cm)<" (rtos anchop) ">: "))
-	)
+	;(if (not anchop)
+	;    (setq mensaje "\nAncho de la hoja (NOTA: las dos jambas ocupan 10 cm)<ancho>: ")
+	;    (setq mensaje (strcat "\nAncho de la hoja (NOTA: las dos jambas ocupan 10 cm)<" (rtos anchop) ">: "))
+	;)
 
-	(if (setq nuevovalor (getdist bisagra mensaje)) (setq anchop nuevovalor))
+	;(if (setq nuevovalor (getdist bisagra mensaje)) (setq anchop nuevovalor))
 
 	;;Redondeo a un número entero de centímetros
-	(setq anchop (distof (rtos anchop 2 2) 2))
+	;(setq anchop (distof (rtos anchop 2 2) 2))
 
 	;;----------------------Vamos a crear (si hace falta) un bloque puerta nuevo-------------------
 

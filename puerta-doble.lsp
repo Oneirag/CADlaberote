@@ -13,7 +13,7 @@
   (setq *error* olderr)
   (setq seleccion nil
   )
-  (command "_undo" "_end")
+  (command-s"_undo" "_end")
   (recupera-vars)
   (princ)
 )
@@ -81,7 +81,7 @@
  	 )
 
 
- (command "_undo" "_begin")
+ (command-s"_undo" "_begin")
 
 
  (setq bisagra (getpoint "\nPunto en el que irá la bisagra <Relativo>: "))
@@ -156,43 +156,43 @@
 		;;Dibujar una jamba
  
 		(setvar "CLAYER" "0")
-		(Command "_rectang" "0,0" (list jamba jamba))
+		(command-s"_rectang" "0,0" (list jamba jamba))
 		(setq seleccion (ssadd (entlast) seleccion))	
 	
 
 		;;Dibujar otra jamba
 		
-		(command "_copy" seleccion "" "0,0" (list (+ anchoh1 anchoh2 jamba) 0))
+		(command-s"_copy" seleccion "" "0,0" (list (+ anchoh1 anchoh2 jamba) 0))
 		(setq seleccion (ssadd (entlast) seleccion))
 
 
 		;;Dibujar la hoja1
 
-		(command "_rectang" "0,0" (list 0.03 anchoh1 ))
+		(command-s"_rectang" "0,0" (list 0.03 anchoh1 ))
 		(setq seleccion (ssadd (entlast) seleccion))
-		(command "_move" (entlast) "" "0,0" (list jamba jamba))
+		(command-s"_move" (entlast) "" "0,0" (list jamba jamba))
 
 
 		;;Dibujar la hoja2
 
-		(command "_rectang" "0,0" (list 0.03 anchoh2 ))
+		(command-s"_rectang" "0,0" (list 0.03 anchoh2 ))
 		(setq seleccion (ssadd (entlast) seleccion))
-		(command "_move" (entlast) "" "0,0" (list (+ jamba anchoh1 anchoh2 -0.03) jamba))
+		(command-s"_move" (entlast) "" "0,0" (list (+ jamba anchoh1 anchoh2 -0.03) jamba))
 	
 
 		;;Dibujar el arco1
 
-		(command "_arc" "_c" "0,0" (list anchoh1  0)(list 0 anchoh1))
+		(command-s"_arc" "_c" "0,0" (list anchoh1  0)(list 0 anchoh1))
 		(setq seleccion (ssadd (entlast) seleccion))
-		(command "_move" (entlast) "" "0,0" (list jamba jamba))
+		(command-s"_move" (entlast) "" "0,0" (list jamba jamba))
 
 		;;Dibujar el arco2
 
-		(command "_arc" "_c" "0,0" (list 0 anchoh2 ) (list (* anchoh2 -1) 0))
+		(command-s"_arc" "_c" "0,0" (list 0 anchoh2 ) (list (* anchoh2 -1) 0))
 		(setq seleccion (ssadd (entlast) seleccion))
-		(command "_move" (entlast) "" "0,0" (list (+ jamba anchoh1 anchoh2) jamba))
+		(command-s"_move" (entlast) "" "0,0" (list (+ jamba anchoh1 anchoh2) jamba))
 
-		(command "_block" nombre "0,0" seleccion  "")
+		(command-s"_block" nombre "0,0" seleccion  "")
 
 		
 
@@ -205,10 +205,10 @@
 
 
  (setvar "CLAYER" capamuro)
- (command "_line" bisagra pgrosor "")
+ (command-s"_line" bisagra pgrosor "")
 
  (setq linea1 (entlast))
- (command "_offset" (+ anchoh1 anchoh2 jamba jamba) linea1 aux "")	
+ (command-s"_offset" (+ anchoh1 anchoh2 jamba jamba) linea1 aux "")	
 
  (setq aux (entlast))
  (setq linea2 (entget (entlast)))
@@ -224,8 +224,8 @@
 
 (entdel linea1)		;; La quito para ver lo que hay debajo
 
-(command "_break" (polar bisagra (angle bisagra p4) (/ anchop 2 )) "_f" bisagra p4)
-(command "_break" (polar pgrosor (angle pgrosor p5) (/ anchop 2 )) "_f" pgrosor p5)
+(command-s"_break" (polar bisagra (angle bisagra p4) (/ anchop 2 )) "_f" bisagra p4)
+(command-s"_break" (polar pgrosor (angle pgrosor p5) (/ anchop 2 )) "_f" pgrosor p5)
 
 (entdel linea1)		;; La vuelvo a poner
 
@@ -236,7 +236,7 @@
 	;crear la capa carpinteria si no existe
 
 (if (not (tblsearch "LAYER" "Carpinteria"))		
-		(command "_LAYER" "_New" "Carpinteria" "_color" "_cyan" "carpinteria" "")
+		(command-s"_LAYER" "_New" "Carpinteria" "_color" "_cyan" "carpinteria" "")
 	)
 	(setvar "CLAYER" "Carpinteria")
 
@@ -248,8 +248,8 @@
 	(equal (+ (angle bisagra p4) (/ pi 2)) (angle bisagra pgrosor) 0.001)
 	(equal (- (angle bisagra p4) (/(* 3 pi) 2)) (angle bisagra pgrosor) 0.001)
     )		
-	     	(command "_insert" nombre bisagra "" "" (* 180.0 (/ (angle bisagra p4) pi)) )
-	   	(command "_insert" nombre bisagra "" "-1" (* 180.0 (/ (angle bisagra p4) pi)) )
+	     	(command-s"_insert" nombre bisagra "" "" (* 180.0 (/ (angle bisagra p4) pi)) )
+	   	(command-s"_insert" nombre bisagra "" "-1" (* 180.0 (/ (angle bisagra p4) pi)) )
 )
 
 
@@ -259,7 +259,7 @@
 
 
 
-(command "_undo" "_end")
+(command-s"_undo" "_end")
 (setq *error* olderr)		;;Volver a poner los errores en condiciones
 (recupera-vars)
 (prin1)				;Para que no salga ningun valor en la línea de comandos
