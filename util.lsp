@@ -19,14 +19,12 @@
 ;;				FUNCION DE PUNTO RELATIVO
 ;;	-------------------------------------------------------------------------------
 
-(defun pto-rel (/ pto angul dis
-		)
-
-	(setq pto 	(getpoint 		"\nMedido desde :"	))
-	(setq dis 	(getdist 	pto 	"\nDistancia: "		))
-	(setq angul 	(getangle 	pto 	"\nAngulo: "		))
-	(setq pto 	(polar 		pto 	angul 	   	     dis))
-
+(defun pto-rel (/ pto angul dis)
+	(setq pto 	(getpoint 		"\nMedido desde :"))
+	(setq dis 	(getdist 	pto 	"\nDistancia: "))
+	(setq angul 	(getangle 	pto 	"\nAngulo: "))
+	(setq pto 	(polar 		pto 	angul 	dis))
+	pto  ; Retornar el punto calculado
 )
 
 
@@ -40,47 +38,46 @@
 ;;			Función auxiliar que dice si dos líneas son paralelas
 ;;	-------------------------------------------------------------------------------
 
-(defun paralelas (a b / c d tolera)
+(defun paralelas (a b / c d tolera longitud)
 
+	(setq tolera 0.001)		;Valor de la tolerancia, un desnivel relativo del 0.1 %
 
-(setq tolera 0.001)		;Valor de la tolerancia, un desnivel relativo del 0.1 %
+	;(setq a (entsel "\nSeñala algo.."))
+	;(setq b (entsel "\nSeñala algo.."))
+	;(setq a (car a))
+	;(setq b (car b))
 
-;(setq a (entsel "\nSeñala algo.."))
-;(setq b (entsel "\nSeñala algo.."))
-;(setq a (car a))
-;(setq b (car b))
+	;; ESTA ERA LA COMPROBACION QUE HACIA ANTES
 
-;; ESTA ERA LA COMPROBACION QUE HACIA ANTES
-
-;	(if (or (equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
-;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
-;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
-;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
-;			     )
-
+	;	(if (or (equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
+	;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
+	;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
+	;		(equal (angle (pto-ini a) (pto-fin a)) (angle (pto-ini b) (pto-fin b)) tolerancia)
+	;			     )
 
 	(setq d (polar (pto-ini a) (+ (angle (pto-ini a) (pto-fin a)) (/ pi 2)) 1))
 	(setq d (inters (pto-ini a) d (pto-fin b) (pto-ini b) nil))	
 	(setq c (distance (pto-ini a) d))
 	(setq d (polar (pto-fin a) (+ (angle (pto-ini a) (pto-fin a)) (/ pi 2) ) 1))
 	(setq d (inters (pto-fin a) d (pto-fin b) (pto-ini b) nil))
-	(print (- c (distance d (pto-fin a))) )
-	(print (/ (- c (distance d (pto-fin a))) (distance (pto-ini cosa) (pto-fin cosa))) )
+	(print (- c (distance d (pto-fin a))))
+	
+	; Calcular la longitud del segmento 'a' para hacer la comparación relativa
+	(setq longitud (distance (pto-ini a) (pto-fin a)))
+	(print (/ (- c (distance d (pto-fin a))) longitud))
 
-;; Debería dividirla por la longitud del segmento "cosa" para hacerla relativa en %
-;; Vamos a hacerlo así
+	;; Debería dividirla por la longitud del segmento "a" para hacerla relativa en %
+	;; Vamos a hacerlo así
 
-
-;; Así lo hacía antes 
-;;	(if (equal c (distance d (pto-fin a)) tolera)
-;; Y ahora lo hago así
-	(if (equal 0 (/ (- c (distance d (pto-fin a))) (distance (pto-ini cosa) (pto-fin cosa)))  tolera)
+	;; Así lo hacía antes 
+	;;	(if (equal c (distance d (pto-fin a)) tolera)
+	;; Y ahora lo hago así
+	(if (equal 0 (/ (- c (distance d (pto-fin a))) longitud) tolera)
 		(setq c T)
 		(setq c nil)
 	)
 	
-	(setq c c)
-	
+	c  ; Retornar el resultado
 )
 
 
@@ -89,19 +86,11 @@
 ;;				Función Para encontrar un muro
 ;;	-------------------------------------------------------------------------------
 
+(defun encuentra-muro (cosa bis / angulo pt1 pt2 seleccion num-sel
+		       punto indice lista-dist nombre entidad distancia 
+		       intersec pgr tolerancia aux)
 
-
-
-(defun encuentra-muro 	(  cosa		bis		/  		angulo 
-			   pt1 		pt2 		seleccion	num-sel
-			   punto	indice		lista-dist	nombre
-			   entidad	distancia	intersec	pgr	
-			   tolerancia		
-			)				
-
-
-
- ;El segundo punto lo encuentra buscando la recta paralela más próxima a él
+	;El segundo punto lo encuentra buscando la recta paralela más próxima a él
 
 	(setq angulo (angle (pto-ini cosa) (pto-fin cosa)))	;Obtengo el ángulo que forma la recta
 
@@ -112,12 +101,12 @@
 
 	;Sólo partirá objetos hechos con líneas
 
-	(setq seleccion (ssget "_f" (list pt1 pt2) '(  (0 . "LINE") ) ))	;coger sólo lo que haya en la capa muros
-	(setq seleccion (ssdel cosa seleccion))
-	(setq num-sel (sslength seleccion))
+	(setq seleccion (ssget "_f" (list pt1 pt2) '((0 . "LINE"))))	;coger sólo lo que haya en la capa muros
+	(if seleccion (setq seleccion (ssdel cosa seleccion)))
 	(setq pgr nil)
+	
 	(if seleccion							;; Si ha encontrado algo
-	    	(progn
+	    (progn
 		(setq num-sel (sslength seleccion))			
 		(setq indice 0)	
 		(setq lista-dist '())					;;Lista de distancias a la bisagra
@@ -128,63 +117,64 @@
 			;;Verifica paralelismo con la tolerancia anteriormente dicha
 			(if (paralelas cosa nombre)
 			     (progn
-			     (setq intersec (inters (pto-ini nombre) (pto-fin nombre) pt1 pt2))
-			     (setq distancia (distance bis intersec)) 
-     		        (if (not (equal 0 distancia 0.02))	;;Muros de menos de 2 cm tampoco hay
-				(progn	
-			     	(setq lista-dist (append lista-dist (list distancia)))
-			     	(if (<= distancia (apply 'min lista-dist))
-						(setq pgr intersec)
-						(setq pgr pgr)
-				    )		;if
+				(setq intersec (inters (pto-ini nombre) (pto-fin nombre) pt1 pt2))
+				(if intersec  ; Verificar que existe intersección
+				    (progn
+					(setq distancia (distance bis intersec)) 
+					(if (not (equal 0 distancia 0.02))	;;Muros de menos de 2 cm tampoco hay
+					    (progn	
+						(setq lista-dist (append lista-dist (list distancia)))
+						(if (<= distancia (apply 'min lista-dist))
+						    (setq pgr intersec)
+						)		;if
+					    )
+					)
+				    )
 				)
-			     )	
-
 			     )		;progn
-			    			;; Si no son paralelas, fallo			   	
-		     	)
+			)		;; Si no son paralelas, fallo			   	
 		       	(setq indice (+ indice 1))
 		     )		
-
 		)
-
-
-		);Progn
+	    );Progn
 	)		;If seleccion...			
 
-
-;; Ahora habría que ver si pgr es nil, pedir que el usuario seleccione un muro
-	(While (null pgr)
+	;; Ahora habría que ver si pgr es nil, pedir que el usuario seleccione un muro
+	(while (null pgr)
 		(progn
 			(setq pgr (getpoint bis "\nNo encuentro la otra cara del muro. Indiquemela..."))
 			
-			(setq nombre (ssget pgr '((0 . "LINE")) ))
+			(setq nombre (ssget pgr '((0 . "LINE"))))
 			(if (null nombre)
 				(setq pgr nil)
 				;;Verifica paralelismo con la tolerancia anteriormente dicha
 				(progn
-				(setq nombre (ssname nombre 0))
+					(setq nombre (ssname nombre 0))
 					(if (paralelas cosa nombre)
 						(setq pgr (inters (pto-ini nombre) (pto-fin nombre) pt1 pt2 nil))
 						(progn
 							(prompt "\nLa línea seleccionada no es paralela a la primera.")
 							(initget "Si No")
-							(setq aux (getkword "Desea hacerla paralela (Si/<No>)" ))
+							(setq aux (getkword "\nDesea hacerla paralela (Si/<No>): "))
 							(if (not aux)
 								(setq pgr nil)
 								(if (= aux "No")
-								  (setq pgr nil)
-								  (progn		;;Hacerlas paralelas
+								    (setq pgr nil)
+								    (progn		;;Hacerlas paralelas
 									(setvar "CLAYER" (cdr (assoc 8 (entget nombre))))
-									(setq aux (distance (pto-ini nombre) (pto-fin nombre) ))
-									(if (< (distance (pto-ini cosa) (pto-ini nombre)) (distance (pto-ini cosa) (pto-ini nombre)))
-										(command "_line" (pto-ini nombre) (polar (pto-ini nombre) angulo aux) "")
-										(command "_line" (pto-fin nombre) (polar (pto-fin nombre) angulo aux) "")
+									(setq aux (distance (pto-ini nombre) (pto-fin nombre)))
+									(if (< (distance (pto-ini cosa) (pto-ini nombre)) 
+									       (distance (pto-ini cosa) (pto-fin nombre)))
+									    (command-s "_line" (pto-ini nombre) 
+										      (polar (pto-ini nombre) angulo aux) "")
+									    (command-s "_line" (pto-fin nombre) 
+										      (polar (pto-fin nombre) angulo aux) "")
 									)
 									(entdel nombre)
 									(setq nombre (entlast))
-									(setq pgr (inters (pto-ini nombre) (pto-fin nombre) pt1 pt2 nil)))
-								  )	
+									(setq pgr (inters (pto-ini nombre) (pto-fin nombre) pt1 pt2 nil))
+								    )	
+								)
 							)
 						)
 					)
@@ -193,9 +183,7 @@
 		)
 	)
 
-
-(setq pgr pgr)
-
+	pgr  ; Retornar el punto encontrado
 )
 
 
@@ -207,9 +195,5 @@
 ;; 					MENSAJE HORTERA
 ;;	-------------------------------------------------------------------------------
 
-
-
-
 (princ "\nFunciones auxiliares de arquitectura cargadas")	
 (princ)
-
