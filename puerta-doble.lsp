@@ -170,8 +170,8 @@
 
   ;;recorta las lineas del muro entre los puntos ya sabidos
   (entdel linea1)    ;; La quito para ver lo que hay debajo
-  (command "_break" (polar bisagra (angle bisagra p4) (/ anchop 2 )) "_f" bisagra p4)
-  (command "_break" (polar pgrosor (angle pgrosor p5) (/ anchop 2 )) "_f" pgrosor p5)
+  (command "_break" (polar bisagra (angle bisagra p4) (/ *anchop* 2 )) "_f" bisagra p4)
+  (command "_break" (polar pgrosor (angle pgrosor p5) (/ *anchop* 2 )) "_f" pgrosor p5)
   (entdel linea1)    ;; La vuelvo a poner
 
   ;; Ahora, a dibujar la puerta

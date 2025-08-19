@@ -1,4 +1,4 @@
-;;	Programilla para desplazar una carpintería
+;;	Programilla para desplazar una carpinterï¿½a
 
 
 
@@ -7,8 +7,8 @@
 ;;	-------------------------------------------------------------------------------
 
 (defun prog-err (s)
-  (if (/= s "Función cancelada")
-      (princ (strcat "\nError: no se encuentra una carpintería o un muro "))	
+  (if (/= s "Funciï¿½n cancelada")
+      (princ (strcat "\nError: no se encuentra una carpinterï¿½a o un muro "))	
   )
   (setq *error* olderr)
   (setq seleccion nil
@@ -49,7 +49,7 @@
 ;;	-------------------------------------------------------------------------------
 
 
-;; La variable anchop hay que guardarla en el dibujo y todavía no sé como
+;; La variable *anchop* hay que guardarla en el dibujo y todavï¿½a no sï¿½ como
 
 (defun muevecar 	(/ nombre 	entidad
 		   )				
@@ -76,18 +76,18 @@
 
 
 
-(setvar "CLAYER" "carpinteria")		;; Si da error, es que no hay capa carpintería
+(setvar "CLAYER" "carpinteria")		;; Si da error, es que no hay capa carpinterï¿½a
 
 
 
-(setq nombre (entsel "\nSelecciona la carpintería a girar: "))
+(setq nombre (entsel "\nSelecciona la carpinterï¿½a a girar: "))
 	
 (setq nombre (car nombre))
 (setq entidad (entget nombre))
 (if (or (/= (cdr(assoc 0 entidad)) "INSERT") 
 	(/= (strcase (cdr(Assoc 8 entidad))) "CARPINTERIA")
     )
-(/ 0 0)			;;Provoco un error si no es una carpintería
+(/ 0 0)			;;Provoco un error si no es una carpinterï¿½a
 )
 
 
@@ -114,6 +114,6 @@
 (defun c:despcarp () 	(muevecar))
 (defun c:dpc ()		(muevecar))		;Alias de la orden
 
-(princ "\nFuncion para mover carpinterías en un muro en 2D...cargada OK")	
+(princ "\nFuncion para mover carpinterï¿½as en un muro en 2D...cargada OK")	
 (princ)
 

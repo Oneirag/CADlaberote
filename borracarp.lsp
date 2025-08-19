@@ -1,4 +1,4 @@
-;;	Programilla para borrar una carpintería
+;;	Programilla para borrar una carpinterï¿½a
 
 
 
@@ -7,8 +7,8 @@
 ;;	-------------------------------------------------------------------------------
 
 (defun prog-err (s)
-  (if (/= s "Función cancelada")
-      (princ (strcat "\nError: no se encuentra una carpintería o un muro "))	
+  (if (/= s "Funciï¿½n cancelada")
+      (princ (strcat "\nError: no se encuentra una carpinterï¿½a o un muro "))	
   )
   (setq *error* olderr)
   (setq seleccion nil
@@ -49,7 +49,7 @@
 ;;	-------------------------------------------------------------------------------
 
 
-;; La variable anchop hay que guardarla en el dibujo y todavía no sé como
+;; La variable *anchop* hay que guardarla en el dibujo y todavï¿½a no sï¿½ como
 
 (defun borrac 	(/ bisagra 	cosamuro 	datosmuro 	angulo 
 		   pt1 		pt2 		seleccion	num-sel
@@ -79,12 +79,12 @@
 
 
 
-(setvar "CLAYER" "carpinteria")		;; Si da error, es que no hay capa carpintería
+(setvar "CLAYER" "carpinteria")		;; Si da error, es que no hay capa carpinterï¿½a
 
 
 (setq sel (ssadd))
 
-(setq nombre (entsel "\nSelecciona la carpintería a borrar: "))
+(setq nombre (entsel "\nSelecciona la carpinterï¿½a a borrar: "))
 	
 (setq nombre (car nombre))
 (setq sel (ssadd nombre sel))
@@ -92,7 +92,7 @@
 (if (or (/= (cdr(assoc 0 entidad)) "INSERT") 
 	(/= (strcase (cdr(Assoc 8 entidad))) "CARPINTERIA")
     )
-(/ 0 0)			;;Provoco un error si no es una carpintería
+(/ 0 0)			;;Provoco un error si no es una carpinterï¿½a
 )
 
 
@@ -102,7 +102,7 @@
 
 (setq bisagra (cdr(assoc 10 entidad)))
 
-;; Coger las dos líneas del ancho de la carpintería
+;; Coger las dos lï¿½neas del ancho de la carpinterï¿½a
 
 (setq angulo 	(cdr(assoc 50 entidad)))
 
@@ -111,7 +111,7 @@
 (setq      aux 	seleccion)
 
 
-;;Ahora, hay que quitar de la selección la línea del muros
+;;Ahora, hay que quitar de la selecciï¿½n la lï¿½nea del muros
 
 		(setq num-sel (sslength seleccion))			
 		(setq indice 0)	
@@ -214,6 +214,6 @@
 (defun c:borracarp () 	(borrac))
 (defun c:boc ()		(borrac))		;Alias de la orden
 
-(princ "\nFuncion para borrar carpinterías en un muro en 2D...cargada OK")	
+(princ "\nFuncion para borrar carpinterï¿½as en un muro en 2D...cargada OK")	
 (princ)
 

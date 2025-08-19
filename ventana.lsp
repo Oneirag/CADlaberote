@@ -35,7 +35,7 @@
 )
 
 ;; -------------------------------------------------------------------------------
-;; FUNCION para crear las carpinterías
+;; FUNCION para crear las carpinterï¿½as
 ;; -------------------------------------------------------------------------------
 (defun carpint ()
   ;;Dibujar un perfil
@@ -80,25 +80,25 @@
   
   ;; Inicializo esto antes de que me haga falta
   (setq hueco (+ perfil cristal perfil))
-  (setq bisagra (getpoint "\nPunto en el que irá una bisagra <Relativo>: "))
+  (setq bisagra (getpoint "\nPunto en el que irï¿½ una bisagra <Relativo>: "))
   (if (not bisagra)
     (setq bisagra (pto-rel))
   )
-  (setq bisagra (osnap bisagra "_nearest")) ;;Ajustar el punto. Si da error se que no había muro
+  (setq bisagra (osnap bisagra "_nearest")) ;;Ajustar el punto. Si da error se que no habï¿½a muro
   (setq cosamuro (ssname (ssget bisagra) 0))
   (setq datosmuro (entget cosamuro))
   (setq capamuro (cdr(assoc 8 datosmuro))) ;;Poner la capa de lo que sea como capa actual
   (setq pgrosor (encuentra-muro cosamuro bisagra))
   (if (not pgrosor)
     (progn
-      (prompt "\nNo encuentro otra línea paralela")
+      (prompt "\nNo encuentro otra lï¿½nea paralela")
       (exit) ;; Provocar fallo
     )
   )
   
-  ;;hacia qué lado?
+  ;;hacia quï¿½ lado?
   (initget 1)
-  (setq aux (getpoint bisagra "\nHacia que lado de la bisagra irá el hueco: "))
+  (setq aux (getpoint bisagra "\nHacia que lado de la bisagra irï¿½ el hueco: "))
   
   ;;----------------------Vamos a crear (si hace falta) un bloque ventana nuevo-------------------
   (setq distancia (distance bisagra pgrosor))
@@ -139,7 +139,7 @@
         (progn
           (command-s "_move" seleccion ""  (list (+ cristal perfil perfil) 0) "0,0")
           (carpint)
-          ;; Por último, la línea de en medio de la ventana
+          ;; Por ï¿½ltimo, la lï¿½nea de en medio de la ventana
           (command-s "_line" "0,-.05" "0,.1" "")
           (setq seleccion (ssadd (entlast) seleccion))
           (command-s "_move" seleccion "" "0,0" (list (+ cristal perfil perfil) 0 ) )
@@ -151,14 +151,14 @@
         (repeat (- (atoi tipo) 1)
           (command-s "_move" seleccion ""  "0,0" (list (+ cristal perfil perfil) 0) )
           (carpint)
-          ;; Por último, la línea de en medio de la ventana
+          ;; Por ï¿½ltimo, la lï¿½nea de en medio de la ventana
           (command-s "_line" (list hueco -0.05) (list hueco (+ 0.05 perfil)) "" )
           (setq seleccion (ssadd (entlast) seleccion))
         ) ;fin repeat
       ) ;fin /= tipo simple....
       
       ;; Ponerle alfeizar si lo necesita
-      ;; Esto lo inicialicé al principio    
+      ;; Esto lo inicialicï¿½ al principio    
       (setq hueco (+ perfil cristal perfil))
       (cond
         ((eq tipo "Doble") (setq hueco (+ hueco hueco)))
@@ -166,7 +166,7 @@
         (T (setq hueco (* (atof tipo) hueco)))
       )
       
-      ;; Si quiero centrar la carpintería en el muro:
+      ;; Si quiero centrar la carpinterï¿½a en el muro:
       (if (= centrar "Si")
         (progn
           (command-s "_move" seleccion "" "0,0" (list 0  (/ (- distancia perfil) 2 )   ))
@@ -175,7 +175,7 @@
         )
       )
       
-      ;; Si no lleva alfeizar, dibujar una línea
+      ;; Si no lleva alfeizar, dibujar una lï¿½nea
       (if (eq alf "No") 
         (command-s "_line" (list 0 distancia) (list hueco distancia) "" )
         ;; Si lleva alfeizar, dibujarlo
@@ -196,7 +196,7 @@
   (command-s "_line" bisagra pgrosor "")
   (setq linea1 (entlast))
   
-  ;; dibujar la otra línea del cerco en el muro
+  ;; dibujar la otra lï¿½nea del cerco en el muro
   ;; Como falla y no se pq lo pongo a lo bruto
   (setq hueco (+ perfil cristal perfil))
   (cond
@@ -215,8 +215,8 @@
   
   ;;recorta las lineas del muro entre los puntos ya sabidos
   (entdel linea1) ;; La quito para ver lo que hay debajo
-  (command-s "_break" (polar bisagra (angle bisagra p4) (/ anchop 2 )) "_f" bisagra p4)
-  (command-s "_break" (polar pgrosor (angle pgrosor p5) (/ anchop 2 )) "_f" pgrosor p5)
+  (command-s "_break" (polar bisagra (angle bisagra p4) (/ *anchop* 2 )) "_f" bisagra p4)
+  (command-s "_break" (polar pgrosor (angle pgrosor p5) (/ *anchop* 2 )) "_f" pgrosor p5)
   (entdel linea1) ;; La vuelvo a poner
   
   ;; Ahora, a dibujar la ventana
@@ -241,7 +241,7 @@
   (command-s "_undo" "_end")
   (setq _error_ olderr) ;;Volver a poner los errores en condiciones
   (recupera-vars)
-  (prin1) ;Para que no salga ningun valor en la línea de comandos
+  (prin1) ;Para que no salga ningun valor en la lï¿½nea de comandos
 )
 
 ;; -------------------------------------------------------------------------------

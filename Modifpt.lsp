@@ -7,8 +7,8 @@
 ;;	-------------------------------------------------------------------------------
 
 (defun prog-err (s)
-  (if (/= s "Función cancelada")
-      (princ (strcat "\nError: funcion cancelada "))	;; Debería camniar funcion cancelada por s
+  (if (/= s "Funciï¿½n cancelada")
+      (princ (strcat "\nError: funcion cancelada "))	;; Deberï¿½a camniar funcion cancelada por s
   )
   (redraw)	
   (setq *error* olderr)
@@ -74,13 +74,13 @@
 
  ;solicita el ancho de la hoja 
 
- (setq mensaje (strcat "\nAncho de la hoja <" (rtos anchop) ">: "))
+ (setq mensaje (strcat "\nAncho de la hoja <" (rtos *anchop*) ">: "))
 
- (if (setq nuevovalor (getdist mensaje)) (setq anchop nuevovalor))
+ (if (setq nuevovalor (getdist mensaje)) (setq *anchop* nuevovalor))
 
-	;;Redondeo a un número entero de centímetros
+	;;Redondeo a un nï¿½mero entero de centï¿½metros
  
- (setq anchop (distof (rtos anchop 2 2) 2 ) )
+ (setq *anchop* (distof (rtos *anchop* 2 2) 2 ) )
 
  ;solicita el ancho de la jamba 
 
@@ -88,7 +88,7 @@
 
  (if (setq nuevovalor (getdist mensaje)) (setq  jamba nuevovalor))
 
-	;;Redondeo a un número entero de centímetros
+	;;Redondeo a un nï¿½mero entero de centï¿½metros
  
  (setq jamba (distof (rtos jamba 2 2) 2 ) )
 
@@ -101,7 +101,7 @@
 
 (setq *error* olderr)		;;Volver a poner los errores en condiciones
 (recupera-vars)
-(princ)				;Para que no salga ningun valor en la línea de comandos
+(princ)				;Para que no salga ningun valor en la lï¿½nea de comandos
 
 
 )
@@ -119,6 +119,6 @@
 (defun c:mop	() (modificapuerta))
 
 
-(princ "\nModificar parámetros de la puerta")	
+(princ "\nModificar parï¿½metros de la puerta")	
 (princ)
 

@@ -21,6 +21,7 @@ Está pensado para dibujos en metros, ya que las medidas por defecto del ancho d
 
 ![seleccionar programas de inicio](img/startup_suite.png)
 7. Si todo es correcto en la consola aparece un mensaje que dice "Programas de arquitectura preparados"
+
 8. Opcionalmente, se puede cargar una personalización que muestra una barra flotante con acceso a las herramientas de arquitectura. 
 Para ello, escribe CUI (o _cui), y marca el icono de añadir un fichero:
 
