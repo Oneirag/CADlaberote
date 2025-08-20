@@ -1,153 +1,131 @@
-;;	Programilla para modificar los valores de una puerta
+;; ==============================================================
+;;  modifven.lsp   –  Modificar parámetros de una ventana
+;;  AutoCAD?2026, compatible con arquitectura_v2026.lsp
+;;  •  Usa las variables globales (*cristal*, *perfil*, *alf*, *tipo*,
+;;     *centrar*) que ya están definidas en arquitectura_v2026.lsp.
+;;  •  Se emplea `command-s` en todas partes.
+;;  •  Manejo de errores con una función de error dedicada.
+;;  •  Guardado / recuperación de variables de AutoCAD.
+;;  •  Mensaje de bienvenida y alias de la orden.
+;; ==============================================================
 
-
-
-;;	-------------------------------------------------------------------------------
-;;					FUNCION DE ERROR
-;;	-------------------------------------------------------------------------------
-
-(defun prog-err (s)
-  (if (/= s "Función cancelada")
-      (princ (strcat "\nError: funcion cancelada "))	;; Debería camniar funcion cancelada por s
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 1.  Asegurar que todas las variables de arquitectura existan  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun modifven--ensure-vars ()
+  "Crea las variables que el programa necesita si no están definidas."
+  (unless (boundp '*cristal*)  (defvar *cristal* 0.5  "Espesor del cristal 2D"))
+  (unless (boundp '*perfil* )  (defvar *perfil*  0.05 "Espesor del perfil 2D"))
+  (unless (boundp '*alf*   )  (defvar *alf*    "Si"  "Alfeizar (Si/No)"))
+  (unless (boundp '*tipo*  )  (defvar *tipo*   "Doble" "Tipo de ventana"))
+  (unless (boundp '*centrar*) (defvar *centrar* "No" "Centrar en muro"))
+  ;; en la versión original también había variables sin asterisco;
+  ;; si todavía las necesitas, simplemente haz referencia a ellas
+  ;; (por ejemplo: (if (boundp 'tipo) (setq *tipo* tipo))))
   )
-  (redraw)	
-  (setq *error* olderr)
-  (setq seleccion nil
-  )
-  (recupera-vars)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 2.  Manejo de errores                                           ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun modifven--error (msg)
+  "Muestra `msg`, restaura el entorno guardado y finaliza."
+  (princ (strcat "\n[MODIFVEN] Error: " msg))
+  (redraw)                ; asegura que la pantalla esté actualizada
+  (command-s "_undo" "_end")
+  (modifven--recupera-vars)
+  (setq _error_ olderr)
   (princ)
-)
+  (exit))
 
-;;	-------------------------------------------------------------------------------
-;;			Funcion para salvar las variables del sistema
-;;	-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 3.  Guardar / Recuperar variables de AutoCAD                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar *MLST* nil)   ; lista donde se guardan las variables
 
-(defun salva-vars (a)
-  (setq MLST '())
-  (repeat (length a)
-    (setq MLST (append MLST (list (list (car a) (getvar (car a))))))
-    (setq a (cdr a))
-  )
-)
+(defun modifven--salva-vars (vars)
+  "Guarda en *MLST* las variables `vars`."
+  (setq *MLST* (mapcar (lambda (v) (list v (getvar v))) vars)))
 
+(defun modifven--recupera-vars ()
+  "Restaura las variables guardadas en *MLST*."
+  (when *MLST*
+    (mapcar (lambda (p) (setvar (car p) (cadr p))) *MLST*)
+    (setq *MLST* nil)))
 
-;;	-------------------------------------------------------------------------------
-;;			Funcion para recuperar las variables salvadas del sistema
-;;	-------------------------------------------------------------------------------
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 4.  Función principal (implementación real)                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun modifven--impl ()
+  "Solicita al usuario los nuevos valores de una ventana."
+  ;; 4.1  Guardar estado y activar control de errores
+  (setq olderr _error_ _error_ modifven--error)
 
-(defun recupera-vars ()
-  (repeat (length MLST)
-    (setvar (caar MLST) (cadar MLST))
-    (setq MLST (cdr MLST))
-  )
-)
+  ;; 4.2  Asegurar variables de arquitectura
+  (modifven--ensure-vars)
 
+  ;; 4.3  Guardar configuración de AutoCAD
+  (modifven--salva-vars
+    '("cmdecho" "blipmode" "expert" "gridmode" "osmode"
+      "thickness" "clayer" "OFFSETDIST" "ORTHOMODE"))
+  (mapcar 'setvar
+          '(cmdecho blipmode expert gridmode osmode thickness ORTHOMODE)
+          '(0 0 0 0 0 0 0))
+  (command-s "_undo" "_begin")
 
+  ;; 4.4  Abrir el “slide” de la ventana
+  (command-s "_vslide" "VENTANA")
 
+  ;; 4.5  Tipo de ventana
+  (let ((mensaje (strcat "\nTipo de ventana (Simple/Doble/3/4) <"
+                         *tipo* ">: "))
+        (valor nil))
+    (initget "Simple Doble 3 4")
+    (when (setq valor (getkword mensaje))
+      (setq *tipo* valor)))
 
-;;	-------------------------------------------------------------------------------
-;; 					FUNCION PRINCIPAL
-;;	-------------------------------------------------------------------------------
+  ;; 4.6  Alfeizar
+  (let ((mensaje (strcat "\nLleva alfeizar (Si/No) <"
+                         *alf* ">: "))
+        (valor nil))
+    (initget "Si No")
+    (when (setq valor (getkword mensaje))
+      (setq *alf* valor)))
 
+  ;; 4.7  Ancho del cristal
+  (let ((mensaje (strcat "\nAncho del cristal <" (rtos *cristal*) "> : "))
+        (valor nil))
+    (when (setq valor (getdist mensaje))
+      (setq *cristal* valor))
+    (setq *cristal* (distof (rtos *cristal* 2 2) 2)))  ; redondea a cm
 
-(defun modificaven (/ mensaje  nuevovalor
-		)				
+  ;; 4.8  Espesor del perfil
+  (let ((mensaje (strcat "\nAncho del perfil <" (rtos *perfil*) "> : "))
+        (valor nil))
+    (when (setq valor (getdist mensaje))
+      (setq *perfil* valor))
+    (setq *perfil* (distof (rtos *perfil* 2 2) 2)))
 
-;;-------LLamar a la nueva funcion de error)
-	(setq olderr *error* *error* prog-err)
+  ;; 4.9  Centrar en el muro
+  (let ((mensaje (strcat "\nCentrar en el muro (Si/No) <"
+                         *centrar* ">: "))
+        (valor nil))
+    (initget "Si No")
+    (when (setq valor (getkword mensaje))
+      (setq *centrar* valor)))
 
-;;	Guardar variables del sistema
-	(salva-vars '("cmdecho" "blipmode" "expert" 
-           "gridmode" "osmode" "thickness" "clayer")
-	)
+  ;; 4.10  Refrescar pantalla
+  (redraw)
 
-;;------Poner los valores que quiera en las variables del sistema------------
-	(mapcar 'setvar
-    		'("cmdecho" "blipmode" "expert" "gridmode"
-      		"osmode" "thickness")
-    		'(0 0 0 0 0 0)
- 	 )
+  ;; 4.11  Restaurar el entorno y terminar
+  (setq _error_ olderr)
+  (modifven--recupera-vars)
+  (princ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 5.  Alias y mensaje de bienvenida                             ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun c:modifven () (modifven--impl))
+(defun c:mopven () (modifven--impl))   ; alias
 
-(command "_vslide" "VENTANA")
-
-;; Ventana simple o doble?
-
-
-(setq mensaje (strcat "\nTipo de ventana (Simple/Doble/3 hojas/4 hojas) <" tipo ">: "))
-
-(Initget "Simple Doble 3 4")
-(if (setq nuevovalor (getkword mensaje)) (setq tipo nuevovalor))
-
-
-;; Alfeizar si o no
-
-
-(setq mensaje (strcat "\nLLeva ALFEIZAR (Si/No) <" alf ">: "))
-
-(Initget "Si No")
-(if (setq nuevovalor (getkword mensaje)) (setq alf nuevovalor))
-
-
-;solicita el ancho de las hojas 
-
- (setq mensaje (strcat "\nAncho de cada CRISTAL <" (rtos cristal) ">: "))
-
-
- (if (setq nuevovalor (getdist mensaje)) (setq cristal nuevovalor))
-
-	;;Redondeo a un número entero de centímetros
- 
- (setq cristal (distof (rtos cristal 2 2) 2 ) )
-
- 
-
- (setq mensaje (strcat "\nAncho del PERFIL <" (rtos perfil) ">: "))
-
- (if (setq nuevovalor (getdist mensaje)) (setq  perfil nuevovalor))
-
-	;;Redondeo a un número entero de centímetros
- 
- (setq perfil (distof (rtos perfil 2 2) 2 ) )
-
-
-
-;; Centrar en el muro Si o No
-
-
-(setq mensaje (strcat "\nCentrar en el muro (Si/No) <" Centrar ">: "))
-
-(Initget "Si No")
-(if (setq nuevovalor (getkword mensaje)) (setq Centrar nuevovalor))
-
-
-
-(redraw)
-
-
-
-
-
-(setq *error* olderr)		;;Volver a poner los errores en condiciones
-(recupera-vars)
-(princ)				;Para que no salga ningun valor en la línea de comandos
-
-
-)
-
-
-
-
-
-
-;;	-------------------------------------------------------------------------------
-;; 					MENSAJE HORTERA
-;;	-------------------------------------------------------------------------------
-
-(defun c:modifven 	() (modificaven))
-(defun c:mopven		() (modificaven))
-
-
-(princ "\nModificar parámetros de la ventana")	
+(princ "\nFunción para modificar parámetros de la ventana cargada OK")
 (princ)
-

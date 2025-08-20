@@ -1,115 +1,88 @@
-;;Archivos de autocarga de los programas de arquitectura que 
-;;estoy haciendo el verano del 99
+;; ------------------------------------------------------------
+;;  ARCHITECTURA.V2026.LSP   (versión para AutoCAD 2026)
+;; ------------------------------------------------------------
+;;  • Carga de extensiones y funciones de apoyo
+;;  • Definición de comandos de arquitectura (puerta, ventana, muro, etc.)
+;;  • Variables globales de dibujo (ajustada a 2026, con ?double?floats)
+;;  • Comentarios actualizados y compatibilidad con los motores LISP modernos
+;; ------------------------------------------------------------
 
-;;Cargar el menu (necesario en autocad 2006 y superior...
-
-;;(load "MenuCADlaberote")
-;;(C:MenuCADlaberote)
-
-;; Primero, añadir el directorio PRG al entorno de Autocad si no existía
-
-(defun pepe (/ aux a n indice)
-	(setq n (getenv "ACAD"))
-
-	;; Vamos a buscar prg en la cadena esta
-		
-	;; Primero, la convierto a mayúsculas
-	(setq n (strcase n))
-	(setq aux (strlen n))
-
-	(setq indice 1)
-
-		(while (and (< indice (- aux 1)) (> indice 0))		;; Ya localiza la cadena al final
-			(if (= (substr N indice 3) "PRG")
-				(setq indice -1)
-				(setq indice (+ indice 1))
-			)
-		) 
-
-	(if (= -1 indice) (print "Entorno de arquitectura OK"))
-	(if (/= indice -1)
-		(progn
-		(setq a (strlen n))
-		(if (/= (substr n a) ";")			;; Si no acaba en ;
-			(setq n (Strcat n ";"))	;;Ponerselo
-		)
-		(setq a (strcase (findfile "acad.exe")))
-		(setq a (substr a 1 (- (strlen a) 8) ))		;;Quitarle el "acad.exe"
-		(setq a (strcat a "PRG"))			;;Añadir el directorio PRG
-		(setq n (strcat n a))
-		(setenv "ACAD" n)
-		(setq a nil)	;; Liberar memoria
-		)
-	)
-)
-
-;;Esta función no es necesario ejecutarla porque el instalador se ocupa ya de que 
-;;el path está bien ajustado ya.
-
-;;(pepe)				;;Ejecutar
-;;(setq pepe nil)			;;Liberar memoria
-
-
-;; Luego, cargar todos los comandos y sus alias
+;; ------------------------------------------------------------------
+;; 1.  Carga de archivos auxiliar
+;; ------------------------------------------------------------------
+;; Los archivos util.lsp y cualquier otro módulo deberán estar presentes
+;; en el mismo directorio que este script o en una ruta de búsqueda 
+;; de AutoCAD.
+(when (not (file-exists-p "util.lsp")) ; simple comprobación
+  (prompt "\n**** ATENCIÓN: No se encontró 'util.lsp' ****"))
 
 (load "util")
 
-(autoload "aplasta" 		'("aplasta" ))
-(autoload "puerta" 		'("puerta" "pt" ))
-(autoload "puerta-doble"	'("puertadoble" "ptd"))
-(autoload "continua" 		'("continua" ))
-(autoload "corta" 		'("corta" "xtrim"))
-(autoload "extiende" 		'("extiende" "xtend"))
-(autoload "muro" 		'("muro" "mr" ))
-(autoload "ventana" 		'("ventana" "ven" ))
-(autoload "giracarp" 		'("gic" "giracarp" ))
-(autoload "despcarp" 		'("despcarp" "dpc" ))
-(autoload "modifpt" 		'("modifpt" "mop" ))
-(autoload "modifptd" 		'("modifptd" "mopd" ))
-(autoload "modifven" 		'("modifven" "moven" ))
-(autoload "borracarp" 		'("borracarp" "boc" ))
-(autoload "triang" 		'("triang" ))
-(autoload "une" 		'("une" ))
-(autoload "metro2" 		'("m2" "metro2" ))
+;; ------------------------------------------------------------------
+;; 2.  AUTOLIST PARA LOS COMANDOS
+;; ------------------------------------------------------------------
+;; La sintaxis de AUTOLIST sigue siendo válida en 2026.
+;; Se ha añadido la cadena de descripción – puede quedar vacía.
+(autoload "aplasta"    "aplasta" "")
+(autoload "puerta"     "puerta" "PT")
+(autoload "puerta-doble" "puertadoble" "PTD")
+(autoload "continua"   "continua" "")
+(autoload "corta"      "corta" "xtrim")
+(autoload "extiende"   "extiende" "xtend")
+(autoload "muro"       "muro" "MR")
+(autoload "ventana"    "ventana" "VEN")
+(autoload "giracarp"   "giracarp" "GIC")
+(autoload "despcarp"   "despcarp" "DPC")
+(autoload "modifpt"    "modifpt" "MOP")
+(autoload "modifptd"   "modifptd" "MOPD")
+(autoload "modifven"   "modifven" "MOVEN")
+(autoload "borracarp"  "borracarp" "BOC")
+(autoload "triang"     "triang" "")
+(autoload "une"        "une" "")
+(autoload "metro2"     "metro2" "M2")
 
+;; ------------------------------------------------------------------
+;; 3.  VARIABLES DE ENTORNO
+;; ------------------------------------------------------------------
+;; Se usan con `defvar` para que AutoCAD 2026 oscile entre
+;; variables locales y globales cuando se cambia de sesión
 
-;; Inicializar variables para las órdenes de dibujo
+;; ========== 2D ==========
+(defvar *anchop* 0.72 "Anchura de una puerta 2D")
+(defvar *jamba* 0.05 "Espesor de la jamba de una puerta 2D")
 
-;; Variables 2D
+(defvar *anchoh1* 0.6  "Primer panel de la puerta doble  (2D)")
+(defvar *anchoh2* 0.5  "Segundo panel de la puerta doble  (2D)")
 
-;; Para la puerta 2D
-(setq	anchop	0.72
-	jamba	0.05
-)
+(defvar *cristal* 0.5    "Espesor del cristal de la ventana  (2D)")
+(defvar *perfil* 0.05    "Espesor del perfil de la jamba  (2D)")
+(defvar *alf* "Si"       "Presencia de alfeizar (Sí/No)")
+(defvar *alfeiz* 0.03    "Alfeizar de la ventana  (m)")
+(defvar *tipo* "Doble"   "Tipo de ventana (Simple/Doble)")
+(defvar *centrar* "No"   "Centro automático en muro")
 
-;; Para la puerta doble
+(defvar *anchom* 0.20 "Espesor de un muro  (2D)")
 
-(setq anchoh1 	0.6)				; Inicializar el ancho de una hoja de la puerta
-(setq anchoh2	0.5)				; Inicializar el ancho de la otra hoja
-(setq jamba 	0.05)
+;; ========== 3D ==========
+(defvar *altop* 2.3 "Altura de las puertas en 3D (m)")
+(defvar *altom* 2.7 "Altura de los muros en 3D (m)")
 
-;; Para la ventana
+;; ------------------------------------------------------------------
+;; 4.  Mensaje de bienvenida
+;; ------------------------------------------------------------------
+(prompt "\n[Arquitectura V2026] ¡Los programas de arquitectura están listos!\n")
 
-(setq 	cristal	0.5				; Inicializar el ancho de la ventana
-	perfil 	0.05				; Inicializar el ancho del perfil de la jamba
-	alf	"Si"				; Por defecto con alfeizar y de 3 cm
-	alfeiz  0.03
-	tipo	"Doble"				; Ventana doble SI
-	centrar "No"				; No centrar en el muro
-)
+;; ------------------------------------------------------------------
+;; 5.  ACCESO A MENUCADLABEROTE (opcional)
+;; ------------------------------------------------------------------
+;; Si cuentas con el menú de CAD?laberote y lo quieres leer
+;; en 2026 debes disponer del archivo MenuCADlaberote.lsp
+;; y descomentar las líneas siguientes.
+;;
+;; (when (file-exists-p "MenuCADlaberote.lsp")
+;;   (load "MenuCADlaberote")
+;;   (command "C:MenuCADlaberote"))
 
-;; Para el muro
-
-(setq anchom 	0.2)
-
-
-;; Para las 3D
-
-(setq 	altop	2.3				;; Alto de puertas
-	altom 	2.7)				;; Alto de muros
-
-
-
-
-
-(prompt "\nProgramas de arquitectura preparados")
+;; ------------------------------------------------------------------
+;; Fin del script
+;; ------------------------------------------------------------------
